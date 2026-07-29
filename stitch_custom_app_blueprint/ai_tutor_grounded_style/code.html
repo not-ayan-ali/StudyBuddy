@@ -1,0 +1,264 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>StudyBuddy | AI Tutor Chat</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Literata:wght@400;600;700&amp;family=Source+Sans+3:wght@400;600;700&amp;family=Caveat&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Literata:wght@100..900&amp;family=Source+Sans+3:wght@100..900&amp;display=swap" rel="stylesheet">
+<style>
+        body {
+            background-color: #17130f; /* Background token */
+            background-image: 
+                linear-gradient(rgba(234, 225, 219, 0.05) 1px, transparent 1px);
+            background-size: 100% 32px; /* Notebook line rhythm */
+        }
+        .contact-shadow {
+            box-shadow: 0 40px 40px -20px rgba(0,0,0,0.15), 0 8px 8px -4px rgba(0,0,0,0.3);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .active-press:active {
+            transform: scale(0.95);
+            opacity: 0.8;
+            transition: all 0.1s ease;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-error": "#690005",
+                      "inverse-primary": "#7d562d",
+                      "on-tertiary-fixed": "#001f2a",
+                      "secondary-container": "#3d4b37",
+                      "surface-container-lowest": "#110d0a",
+                      "outline-variant": "#50453b",
+                      "tertiary-fixed-dim": "#aecbda",
+                      "on-error-container": "#ffdad6",
+                      "surface-tint": "#f0bd8b",
+                      "on-background": "#eae1db",
+                      "surface-dim": "#17130f",
+                      "on-primary-fixed": "#2c1600",
+                      "inverse-surface": "#eae1db",
+                      "background": "#17130f",
+                      "on-secondary-fixed": "#121f0e",
+                      "surface-bright": "#3d3834",
+                      "on-primary-container": "#5b3912",
+                      "secondary-fixed": "#d8e7cc",
+                      "secondary-fixed-dim": "#bccbb1",
+                      "on-secondary-container": "#aabaa0",
+                      "on-secondary-fixed-variant": "#3d4b37",
+                      "outline": "#9c8e82",
+                      "on-surface-variant": "#d4c4b7",
+                      "surface-container-high": "#2e2925",
+                      "surface-container-highest": "#393430",
+                      "secondary": "#bccbb1",
+                      "primary": "#f2be8c",
+                      "error-container": "#93000a",
+                      "on-primary": "#482904",
+                      "surface-variant": "#393430",
+                      "primary-container": "#d4a373",
+                      "surface-container": "#231f1b",
+                      "tertiary": "#b0ccdb",
+                      "on-tertiary-fixed-variant": "#2f4a57",
+                      "on-secondary": "#273422",
+                      "on-tertiary-container": "#294450",
+                      "on-primary-fixed-variant": "#623f18",
+                      "on-surface": "#eae1db",
+                      "tertiary-container": "#95b1bf",
+                      "surface-container-low": "#1f1b17",
+                      "surface": "#17130f",
+                      "inverse-on-surface": "#342f2c",
+                      "error": "#ffb4ab",
+                      "on-tertiary": "#18343f",
+                      "primary-fixed-dim": "#f0bd8b",
+                      "primary-fixed": "#ffdcbd",
+                      "tertiary-fixed": "#cae7f6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "container-padding": "24px",
+                      "gutter": "16px",
+                      "base": "8px",
+                      "notebook-line-height": "32px"
+              },
+              "fontFamily": {
+                      "display-lg": ["Literata"],
+                      "body-lg": ["\"Source Sans 3\""],
+                      "body-md": ["\"Source Sans 3\""],
+                      "display-lg-mobile": ["Literata"],
+                      "note-sm": ["Caveat"],
+                      "label-caps": ["\"Source Sans 3\""],
+                      "headline-md": ["Literata"]
+              },
+              "fontSize": {
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "display-lg-mobile": ["34px", {"lineHeight": "40px", "fontWeight": "700"}],
+                      "note-sm": ["20px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+<!-- Top App Bar -->
+<header class="flex justify-between items-center px-container-padding h-16 w-full fixed top-0 z-50 bg-surface border-b border-outline-variant">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-2xl">school</span>
+<h1 class="font-headline-md text-headline-md text-on-surface">Tutor</h1>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-high p-2 rounded-full transition-colors cursor-pointer">history</span>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest border border-outline-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A focused close-up of a diverse university student with sharp features and a look of academic determination. The lighting is low-key with warm amber tones against a dark studio background, mimicking the dark and studious aesthetic of the StudyBuddy platform. Professional photography style, high detail, sharp focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCV-mHC-c6YKEt5xrrdnf-CKvLrh6qwNmSFBWSzoR3-3aHhLhDGYNV6dviQGRLhjBxs6uJkVsUiBMt8Hl6xSoAN3aoxAO5k8PPpt4MhvaFwRvNJLDRJ8SnsmCcDryVd9HNu318HOirSZd2n1d1b-Hq3d63L1cPwAiATSyOxAUwFJexMUdkMoWZDovUrY3pcyPD0AUXsvs9J6Lmj22IpzvsnPdrnwkoExFohD3XnT-hS8SMd6FGbbmjy">
+</div>
+</div>
+</header>
+<!-- Main Chat Canvas -->
+<main class="pt-20 max-w-4xl mx-auto px-gutter min-h-screen pb-48">
+<!-- Chat History Section -->
+<div class="flex flex-col gap-8">
+<!-- System/Time Indicator -->
+<div class="flex justify-center">
+<span class="font-label-caps text-label-caps text-outline bg-surface-container px-3 py-1 rounded-full uppercase">Session: Quantum Physics Basics</span>
+</div>
+<!-- AI Message -->
+<div class="flex items-start gap-4 group">
+<div class="flex-shrink-0 w-10 h-10 bg-tertiary-container rounded-lg flex items-center justify-center contact-shadow">
+<span class="material-symbols-outlined text-on-tertiary-container text-xl" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+</div>
+<div class="max-w-[85%] md:max-w-[70%]">
+<div class="bg-surface-container contact-shadow p-5 rounded-tr-xl rounded-br-xl rounded-bl-xl border-l-2 border-primary">
+<p class="font-body-md text-body-md text-on-surface">
+                            Hello Alex. I've analyzed your curriculum for <span class="text-primary font-semibold">PHYS-302</span>. We should start with the Schrödinger equation. How comfortable are you with partial differential equations?
+                        </p>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant mt-2 block opacity-60">AI TUTOR • 10:15 AM</span>
+</div>
+</div>
+<!-- Student Message -->
+<div class="flex items-start justify-end gap-4 group">
+<div class="max-w-[85%] md:max-w-[70%] text-right">
+<div class="bg-primary-container contact-shadow p-5 rounded-tl-xl rounded-bl-xl rounded-br-xl text-left">
+<p class="font-body-md text-body-md text-on-primary-container">
+                            I've reviewed the basics, but the transition from wave-particle duality to the actual mathematical formalism is still a bit confusing. Can we visualize it?
+                        </p>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant mt-2 block opacity-60">SENT • 10:16 AM</span>
+</div>
+<div class="flex-shrink-0 w-10 h-10 bg-surface-container-highest rounded-lg flex items-center justify-center border border-outline-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A small avatar icon of a young adult male student with a calm, intellectual expression. The lighting is soft and warm, highlighting the skin tones against a dark charcoal background. The style is clean, modern, and high-contrast, fitting a professional educational application interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBaAhiIhCupD4DJj0uuBSpG_Cm4cLFpTUsNYCWh2z_fHlJDxgu4JR4lhbMOjXj5twdcotqYQtz7GUr5dZ0OlofFcm-j1VGE6mmOd2WsNHY76ADeO6TQA5L8SSOH9BKrAWRqo22rVQ-J1FrOhiym8h2pa9kpK_L4XG-5GlEuIAbKv6Tja_v4oHoBeD3nfuqO1ghNTTYXHUeznZ6l3kzWCw4lfVgSNE6bGQ32PEN3bC652GGNFs2QwpSJ">
+</div>
+</div>
+<!-- AI Message with Concept Card -->
+<div class="flex items-start gap-4 group">
+<div class="flex-shrink-0 w-10 h-10 bg-tertiary-container rounded-lg flex items-center justify-center contact-shadow">
+<span class="material-symbols-outlined text-on-tertiary-container text-xl" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+</div>
+<div class="max-w-[85%] md:max-w-[75%]">
+<div class="bg-surface-container contact-shadow p-5 rounded-tr-xl rounded-br-xl rounded-bl-xl border-l-2 border-primary space-y-4">
+<p class="font-body-md text-body-md text-on-surface">
+                            Absolutely. Think of the wave function (ψ) as a probability map rather than a physical wave in water. Here is a tactile representation of the probability density:
+                        </p>
+<!-- Inline Concept Visualizer (Placeholder for illustration) -->
+<div class="rounded-xl overflow-hidden bg-surface-container-low border border-outline-variant p-1">
+<div class="h-48 w-full bg-surface-dim relative flex items-center justify-center overflow-hidden">
+<div class="absolute inset-0 opacity-20">
+
+</div>
+<div class="relative z-10 text-center">
+<span class="material-symbols-outlined text-primary text-4xl block mb-2">blur_on</span>
+<p class="font-label-caps text-label-caps text-on-surface">Probability Cloud ψ²</p>
+</div>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface italic opacity-80">
+                            Observe how the intensity peaks at the most likely position of the particle.
+                        </p>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant mt-2 block opacity-60">AI TUTOR • 10:17 AM</span>
+</div>
+</div>
+<!-- Hand-written Note Interjection -->
+<div class="max-w-xs ml-auto -mt-4 transform rotate-1">
+<div class="bg-surface-container-high p-4 rounded-xl contact-shadow border-t-4 border-primary">
+<p class="font-note-sm text-note-sm text-on-surface">
+                        Note to self: Ask about the Heisenberg Uncertainty Principle and how it limits the sharpness of this cloud.
+                    </p>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Input Bar -->
+<footer class="fixed bottom-0 w-full bg-surface py-6 px-container-padding z-50">
+<div class="max-w-4xl mx-auto flex items-end gap-3">
+<!-- Attachment/Action buttons -->
+<div class="flex gap-2 pb-1">
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors active-press">
+<span class="material-symbols-outlined">add_circle</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors active-press">
+<span class="material-symbols-outlined">mic</span>
+</button>
+</div>
+<!-- Text Input -->
+<div class="flex-grow relative">
+<textarea class="w-full bg-surface-container-low border border-outline-variant focus:border-primary focus:ring-0 rounded-xl px-4 py-3 text-on-surface font-body-md resize-none scrollbar-hide transition-all" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'" placeholder="Ask StudyBuddy anything..." rows="1"></textarea>
+</div>
+<!-- Send Button -->
+<button class="flex-shrink-0 w-12 h-12 bg-primary-container text-on-primary-container rounded-xl flex items-center justify-center contact-shadow active-press">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</div>
+</footer>
+<!-- Secondary Shell: Navigation Items (Based on JSON logic) -->
+<nav class="fixed bottom-0 md:hidden w-full h-20 bg-surface-container-low z-50 flex justify-around items-center px-gutter pb-safe border-t border-outline-variant">
+  <button class="flex flex-col items-center gap-1 text-on-surface-variant active-press">
+    <span class="material-symbols-outlined">home</span>
+    <span class="font-label-caps text-label-caps">Home</span>
+  </button>
+  <button class="flex flex-col items-center gap-1 text-primary active-press">
+    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">school</span>
+    <span class="font-label-caps text-label-caps">Tutor</span>
+  </button>
+  <button class="flex flex-col items-center gap-1 text-on-surface-variant active-press">
+    <span class="material-symbols-outlined">menu_book</span>
+    <span class="font-label-caps text-label-caps">Resources</span>
+  </button>
+</nav>
+<script>
+        // Simple micro-interaction for input auto-resize and "pressable" feel
+        document.querySelector('textarea').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                // Clear and reset height
+                this.value = '';
+                this.style.height = '48px';
+            }
+        });
+    </script>
+
+
+</body></html>

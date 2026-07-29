@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>StudyBuddy | Login</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&family=Caveat:wght@400..700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Literata:wght@100..900&family=Source+Sans+3:wght@100..900&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+
+        /* Ruled notebook line texture background */
+        .notebook-bg {
+            background-image: linear-gradient(to bottom, rgba(212, 196, 183, 0.05) 1px, transparent 1px);
+            background-size: 100% 32px;
+        }
+
+        /* Focus state for the custom underline input */
+        .underlined-input:focus {
+            outline: none;
+            border-bottom-color: #f2be8c; /* Primary / Ochre */
+        }
+
+        /* Transition for the ochre focus */
+        .underlined-input {
+            transition: border-color 0.3s ease;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#17130f",
+                        "surface-dim": "#17130f",
+                        "on-secondary-fixed": "#121f0e",
+                        "surface": "#17130f",
+                        "on-error": "#690005",
+                        "outline-variant": "#50453b",
+                        "on-secondary-container": "#aabaa0",
+                        "inverse-surface": "#eae1db",
+                        "surface-bright": "#3d3834",
+                        "on-primary-fixed-variant": "#623f18",
+                        "on-error-container": "#ffdad6",
+                        "on-surface": "#eae1db",
+                        "surface-tint": "#f0bd8b",
+                        "primary-fixed": "#ffdcbd",
+                        "error": "#ffb4ab",
+                        "tertiary-container": "#95b1bf",
+                        "on-secondary": "#273422",
+                        "surface-container": "#231f1b",
+                        "outline": "#9c8e82",
+                        "inverse-on-surface": "#342f2c",
+                        "on-primary": "#482904",
+                        "tertiary": "#b0ccdb",
+                        "surface-container-lowest": "#110d0a",
+                        "on-primary-container": "#5b3912",
+                        "error-container": "#93000a",
+                        "surface-container-highest": "#393430",
+                        "on-tertiary": "#18343f",
+                        "on-background": "#eae1db",
+                        "surface-container-high": "#2e2925",
+                        "primary-fixed-dim": "#f0bd8b",
+                        "on-tertiary-container": "#294450",
+                        "primary": "#f2be8c",
+                        "secondary-container": "#3d4b37",
+                        "tertiary-fixed-dim": "#aecbda",
+                        "primary-container": "#d4a373",
+                        "tertiary-fixed": "#cae7f6",
+                        "inverse-primary": "#7d562d",
+                        "secondary-fixed-dim": "#bccbb1",
+                        "secondary-fixed": "#d8e7cc",
+                        "secondary": "#bccbb1",
+                        "surface-container-low": "#1f1b17",
+                        "surface-variant": "#393430",
+                        "on-surface-variant": "#d4c4b7",
+                        "on-primary-fixed": "#2c1600",
+                        "on-tertiary-fixed-variant": "#2f4a57",
+                        "on-tertiary-fixed": "#001f2a",
+                        "on-secondary-fixed-variant": "#3d4b37"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "notebook-line-height": "32px",
+                        "container-padding": "24px",
+                        "gutter": "16px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Literata"],
+                        "body-md": ["\"Source Sans 3\""],
+                        "label-caps": ["\"Source Sans 3\""],
+                        "display-lg-mobile": ["Literata"],
+                        "body-lg": ["\"Source Sans 3\""],
+                        "note-sm": ["Caveat"],
+                        "display-lg": ["Literata"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "display-lg-mobile": ["34px", {"lineHeight": "40px", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "note-sm": ["20px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col items-center justify-between notebook-bg px-container-padding py-24 selection:bg-primary-container selection:text-on-primary-container">
+<!-- Header Section -->
+<header class="w-full max-w-md text-center flex flex-col items-center gap-4">
+<div class="mb-2">
+<!-- Subtle Branding Icon -->
+<span class="material-symbols-outlined text-primary text-4xl mb-4">school</span>
+<h1 class="font-display-lg-mobile text-display-lg-mobile text-primary tracking-tight">StudyBuddy</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">Your AI study planner</p>
+</div>
+</header>
+<!-- Main Form Section -->
+<main class="w-full max-w-md flex flex-col items-center gap-12 z-10">
+<div class="w-full group">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase block mb-4" for="name-input">
+                Your name
+            </label>
+<input autofocus="" class="underlined-input w-full bg-transparent border-0 border-b-2 border-outline py-4 font-body-lg text-body-lg text-on-surface placeholder:text-outline-variant focus:ring-0" id="name-input" placeholder="Enter your name to begin..." type="text"/>
+</div>
+<!-- Decorative scholarly quote -->
+<div class="mt-8 text-center opacity-40">
+<p class="font-note-sm text-note-sm italic text-on-surface">
+                "An investment in knowledge always pays the best interest."
+            </p>
+</div>
+</main>
+<!-- Footer Action -->
+<footer class="w-full max-w-md">
+<button class="w-full bg-primary text-on-primary py-4 rounded-lg font-label-caps text-label-caps tracking-widest uppercase shadow-[0_4px_8px_rgba(0,0,0,0.3),0_24px_40px_rgba(0,0,0,0.15)] active:scale-95 transition-all duration-200" onclick="handleLogin()" type="submit">
+            Continue
+        </button>
+<div class="mt-8 flex justify-center items-center gap-6">
+<span class="h-[1px] w-12 bg-outline-variant"></span>
+<span class="font-label-caps text-[10px] text-outline uppercase tracking-[0.2em]">Academic Focus</span>
+<span class="h-[1px] w-12 bg-outline-variant"></span>
+</div>
+</footer>
+<!-- Subtle Background Detail -->
+<div class="fixed bottom-12 right-12 pointer-events-none opacity-10 hidden lg:block">
+<span class="material-symbols-outlined text-[120px]" style="font-variation-settings: 'wght' 100;">menu_book</span>
+</div>
+<script>
+        // Simple Micro-interaction for the login flow
+        function handleLogin() {
+            const input = document.getElementById('name-input');
+            const button = document.querySelector('button');
+            
+            if (input.value.trim() !== "") {
+                button.innerHTML = "Opening Library...";
+                button.classList.add('opacity-80', 'scale-95');
+                
+                // Simulate a transition to the main app
+                setTimeout(() => {
+                    console.log('Redirecting Alex Scholar to the curriculum...');
+                    // In a real app, this would route to the dashboard
+                }, 800);
+            } else {
+                input.classList.remove('border-outline');
+                input.classList.add('border-error');
+                setTimeout(() => {
+                    input.classList.remove('border-error');
+                    input.classList.add('border-outline');
+                }, 1000);
+            }
+        }
+
+        // Allow 'Enter' key to trigger continue
+        document.getElementById('name-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                handleLogin();
+            }
+        });
+    </script>
+</body></html>

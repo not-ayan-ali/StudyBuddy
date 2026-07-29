@@ -1,0 +1,210 @@
+<!DOCTYPE html><html class="dark" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>StudyBuddy - Loading Plan</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Literata:wght@400;600;700&amp;family=Source+Sans+3:wght@400;600&amp;family=Caveat&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-container": "#aabaa0",
+                    "surface-container": "#231f1b",
+                    "secondary-container": "#3d4b37",
+                    "on-tertiary-container": "#294450",
+                    "on-surface-variant": "#d4c4b7",
+                    "tertiary": "#b0ccdb",
+                    "on-secondary-fixed-variant": "#3d4b37",
+                    "surface-dim": "#17130f",
+                    "surface-container-low": "#1f1b17",
+                    "on-tertiary-fixed-variant": "#2f4a57",
+                    "on-tertiary-fixed": "#001f2a",
+                    "primary-fixed-dim": "#f0bd8b",
+                    "on-error-container": "#ffdad6",
+                    "on-secondary": "#273422",
+                    "inverse-primary": "#7d562d",
+                    "inverse-on-surface": "#342f2c",
+                    "on-surface": "#eae1db",
+                    "on-primary": "#482904",
+                    "on-error": "#690005",
+                    "tertiary-fixed-dim": "#aecbda",
+                    "surface-bright": "#3d3834",
+                    "error-container": "#93000a",
+                    "background": "#17130f",
+                    "surface-variant": "#393430",
+                    "on-secondary-fixed": "#121f0e",
+                    "on-background": "#eae1db",
+                    "tertiary-container": "#95b1bf",
+                    "primary-container": "#d4a373",
+                    "on-primary-container": "#5b3912",
+                    "outline": "#9c8e82",
+                    "tertiary-fixed": "#cae7f6",
+                    "secondary": "#bccbb1",
+                    "outline-variant": "#50453b",
+                    "surface-tint": "#f0bd8b",
+                    "error": "#ffb4ab",
+                    "surface-container-lowest": "#110d0a",
+                    "surface-container-high": "#2e2925",
+                    "surface-container-highest": "#393430",
+                    "inverse-surface": "#eae1db",
+                    "secondary-fixed-dim": "#bccbb1",
+                    "primary-fixed": "#ffdcbd",
+                    "primary": "#f2be8c",
+                    "on-primary-fixed": "#2c1600",
+                    "on-primary-fixed-variant": "#623f18",
+                    "surface": "#17130f",
+                    "secondary-fixed": "#d8e7cc",
+                    "on-tertiary": "#18343f"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "notebook-line-height": "32px",
+                    "gutter": "16px",
+                    "base": "8px",
+                    "container-padding": "24px"
+            },
+            "fontFamily": {
+                    "note-sm": ["Caveat"],
+                    "headline-md": ["Literata"],
+                    "body-lg": ["\"Source Sans 3\""],
+                    "display-lg-mobile": ["Literata"],
+                    "label-caps": ["\"Source Sans 3\""],
+                    "body-md": ["\"Source Sans 3\""],
+                    "display-lg": ["Literata"]
+            },
+            "fontSize": {
+                    "note-sm": ["20px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "display-lg-mobile": ["34px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        @keyframes ring-pulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; stroke-width: 1.5px; }
+            50% { transform: scale(1.05); opacity: 1; stroke-width: 2.5px; }
+        }
+        .animate-ring {
+            animation: ring-pulse 2s ease-in-out infinite;
+            transform-origin: center;
+        }
+        
+        .notebook-lines {
+            background-image: linear-gradient(to bottom, rgba(242, 190, 140, 0.05) 1px, transparent 1px);
+            background-size: 100% 32px;
+        }
+
+        body {
+            background-color: #17130f;
+            color: #eae1db;
+            overflow: hidden;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-body-md selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full bg-background dark:bg-background flex justify-between items-center px-container-padding h-16 w-full z-50">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-variant overflow-hidden border border-outline-variant/20">
+<img class="w-full h-full object-cover" data-alt="A dignified, close-up portrait of a serious university student in a dimly lit library. The lighting is low-key, with warm amber highlights hitting the side of their face, creating a scholarly and focused atmosphere. The background shows blurred book-filled shelves in deep charcoal and ink blue tones. The overall aesthetic is minimal, intellectual, and high-quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZu1VVfAsnS0lJUhow2MavvxWDU6WsWqcXOHyWN7oE0s3BSBUw-U7OZPoVS5tKe4E0qVVUyOkUmvcE0HpKBSQcyY_a8ofMOrtnicQJSlQ5JzQxQGDU0NhE-31JUqe3DCn9gE_IIpT-4OH0wk4AI2i256YXIeS09x82-KQaCd4IZ2akeZ8Pz8UqEcZttQPCj98jA7iF9lGXjbTy8Xj2Ucouwgazg2fS77RCQPAnycrLK4oqXt1zp5C3">
+</div>
+<h1 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed-dim">Good Morning, Scholar</h1>
+</div>
+<div class="flex items-center">
+<button class="p-2 rounded-full hover:bg-surface-container-low transition-colors active:scale-95 duration-150 text-on-surface-variant">
+<span class="material-symbols-outlined">calendar_today</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="relative flex flex-col items-center justify-center min-h-screen w-full notebook-lines px-6">
+<!-- Center Loading Component -->
+<div class="flex flex-col items-center text-center space-y-8">
+<!-- Pulse Ring - Line Art -->
+<div class="relative flex items-center justify-center w-32 h-32">
+<svg class="w-full h-full animate-ring fill-none" viewBox="0 0 100 100">
+<circle cx="50" cy="50" r="45" stroke="#f2be8c" stroke-linecap="round"></circle>
+</svg>
+<!-- Static inner ring for detail -->
+<svg class="absolute w-2/3 h-2/3 fill-none opacity-20" viewBox="0 0 100 100">
+<circle cx="50" cy="50" r="45" stroke="#f2be8c" stroke-width="1"></circle>
+</svg>
+</div>
+<div class="space-y-2">
+<h2 class="font-headline-md text-headline-md text-primary-fixed-dim">Building your plan...</h2>
+<p class="font-body-md text-body-md text-on-surface-variant opacity-80">This usually takes a few seconds.</p>
+</div>
+</div>
+<!-- Decorative Task Element (Post-it Style) -->
+<div class="absolute bottom-32 right-8 hidden md:block transform rotate-2">
+<div class="bg-surface-container-high p-4 rounded shadow-lg border-t-2 border-primary-container max-w-[200px]" style="opacity: 1; transform: translateY(0px) rotate(2deg); transition: 1s ease-out;">
+<p class="font-note-sm text-note-sm text-on-surface-variant">Gathering sources for the thesis section...</p>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-surface-container dark:bg-surface-container border-t border-outline-variant/10 shadow-lg flex justify-around items-center px-4 py-3 pb-safe">
+<!-- Home (Active) -->
+<a class="flex flex-col items-center justify-center rounded-full px-6 py-1 active:scale-90 duration-200 transition-all" href="#" style="color: rgb(212, 163, 115);">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-caps text-label-caps mt-0.5">Home</span>
+</a>
+<!-- Tutor -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">school</span>
+<span class="font-label-caps text-label-caps mt-0.5">Tutor</span>
+</a>
+<!-- Resources -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="font-label-caps text-label-caps mt-0.5">Resources</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for the "post-it" note appearance
+        document.addEventListener('DOMContentLoaded', () => {
+            const note = document.querySelector('.bg-surface-container-high');
+            if (note) {
+                note.style.opacity = '0';
+                note.style.transform = 'translateY(20px) rotate(2deg)';
+                setTimeout(() => {
+                    note.style.transition = 'all 1s ease-out';
+                    note.style.opacity = '1';
+                    note.style.transform = 'translateY(0) rotate(2deg)';
+                }, 800);
+            }
+        });
+    </script>
+
+
+
+
+
+
+</body></html>
