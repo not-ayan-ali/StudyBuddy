@@ -1,58 +1,53 @@
-# Animated book-check loading screen (Expo)
+# StudyBuddy
 
-## Install dependencies
+**StudyBuddy** is an AI-powered study planner and tutor application designed specifically for Matric (9th-10th) and Inter (11th-12th) students in Pakistan. It helps students manage their academic workload by creating personalized study plans based on their actual commitments, providing an AI tutor for instant doubt-solving, and offering curated, class-appropriate study resources.
 
-```bash
-npx expo install react-native-svg react-native-reanimated expo-splash-screen expo-font
-```
+---
 
-If `react-native-reanimated` isn't already set up, add the babel plugin as the
-**last** plugin in `babel.config.js`:
+## 🚀 Key Features
 
-```js
-module.exports = function (api) {
-  api.cache(true);
-  return {
-    presets: ['babel-preset-expo'],
-    plugins: ['react-native-reanimated/plugin'],
-  };
-};
-```
+*   **AI Study Planner**: Generates a personalized daily, weekly, or monthly study timetable based on your school hours, tuition timings, and other commitments.
+*   **AI Tutor**: An interactive chat interface that provides grade-appropriate explanations for academic doubts, ensuring you don't get stuck on complex concepts.
+*   **Curated Resources**: AI-driven resource discovery that provides relevant, class-appropriate links and material for your subjects.
+*   **Offline-Ready**: Plans and resources are cached locally using `AsyncStorage`, ensuring functionality even with poor internet connectivity.
 
-Then restart Metro with cache clear:
+---
 
-```bash
-npx expo start -c
-```
+## 🛠️ Tech Stack
 
-## Files
+*   **Frontend**: React Native + Expo
+*   **AI Integration**: Google Gemini API (for structured JSON planning and doubt-solving)
+*   **Local Storage**: `AsyncStorage`
+*   **UI/Design**: "Scholarly Tactile" aesthetic (Dark graphite, ochre accents)
 
-- `AnimatedBookIcon.tsx` — the actual animated SVG icon (outline draws in →
-  lines draw in staggered → checkmark draws in with a bounce → breathing
-  pulse loop while data loads).
-- `LoadingScreen.tsx` — wraps the icon on a full-screen dark background with
-  the app name fading in underneath once the draw-in finishes.
-- `App.example.tsx` — shows how to keep the **native** Expo splash screen
-  (the plain logo one) up while fonts/data load, then swap to this animated
-  screen, matching the flow from the earlier bug fix conversation.
+---
 
-## Customizing
+## 🏗️ Getting Started
 
-- Colors: edit the `COLORS` object at the top of `AnimatedBookIcon.tsx`.
-- Timing: all the `withDelay(ms, ...)` values in the `useEffect` control the
-  sequencing — outline → spine → 3 lines → checkmark → breathing loop.
-- Size: pass `size={...}` to `<AnimatedBookIcon />` (default 160).
-- To stop the breathing loop (e.g. one-shot animation instead of a loading
-  loop), pass `loop={false}`.
+### Prerequisites
 
-## Notes
+- Node.js (v20+)
+- Expo CLI (`npx expo`)
 
-- The SVG path data is a close hand-drawn approximation of your icon, not a
-  pixel-exported trace. If you want an exact match, export the icon as SVG
-  from your design tool and swap the `d="..."` values in
-  `AnimatedBookIcon.tsx` — the animation logic works the same regardless of
-  the exact path shapes, as long as `strokeDasharray`/`strokeDashoffset` stay
-  driven by the shared values already wired up.
-- `DASH_LENGTH` (1200) is set comfortably higher than any path's actual
-  length — react-native-svg doesn't reliably expose `getTotalLength()` on
-  native, so an oversized fixed value is the standard workaround.
+### Installation
+
+1. Clone the repository.
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the development server:
+   ```bash
+   npx expo start
+   ```
+
+---
+
+## 📂 Project Structure
+
+- `App.js`: Main application entry point and navigation setup.
+- `screens/`: Contains all UI screens (Home, Onboarding, Tutor, Resources).
+- `components/`: Reusable UI components (including the animated loading icons).
+- `services/`: AI API integration and logic.
+- `data/`: Curated resources and local data handlers.
+- `assets/`: App images, icons, and fonts.
