@@ -1,109 +1,58 @@
-# StudyBuddy
+# Animated book-check loading screen (Expo)
 
-An AI-powered study planner and tutor app for Matric and Inter students in Pakistan. Built with React Native (Expo).
-
-## Features
-
-- **AI Study Plan Generator** – Personalized daily/weekly/monthly timetables based on your schedule, subjects, and preferences
-- **AI Tutor** – Ask questions and get grade-appropriate explanations powered by Gemini & Groq AI
-- **Curated Resources** – Subject-wise learning resources scoped to your class and board
-- **Dark Academic Theme** – "Scholarly Tactile" design with Literata, Source Sans 3, and Caveat typography
-
-## Tech Stack
-
-| Layer | Tech |
-|-------|------|
-| Framework | React Native + Expo SDK 57 |
-| Navigation | React Navigation (native-stack + bottom-tabs) |
-| Styling | NativeWind (Tailwind CSS) |
-| AI | Google Gemini API + Groq API |
-| Storage | AsyncStorage (on-device, no backend) |
-| Build | EAS Build / Local Gradle |
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+
-- Expo CLI (`npm install -g expo-cli`)
-- Android Studio (for local APK build)
-- API keys: [Gemini](https://aistudio.google.com/app/apikey) and [Groq](https://console.groq.com/keys)
-
-### Setup
+## Install dependencies
 
 ```bash
-# Install dependencies
-npm install
-
-# Copy environment file and add your API keys
-cp .env.example .env
+npx expo install react-native-svg react-native-reanimated expo-splash-screen expo-font
 ```
 
-Edit `.env` with your API keys:
+If `react-native-reanimated` isn't already set up, add the babel plugin as the
+**last** plugin in `babel.config.js`:
 
-```
-EXPO_PUBLIC_GEMINI_API_KEY=your_gemini_key
-EXPO_PUBLIC_GROQ_API_KEY=your_groq_key
+```js
+module.exports = function (api) {
+  api.cache(true);
+  return {
+    presets: ['babel-preset-expo'],
+    plugins: ['react-native-reanimated/plugin'],
+  };
+};
 ```
 
-### Run
+Then restart Metro with cache clear:
 
 ```bash
-# Start Expo dev server
-npm start
-
-# Run on Android
-npm run android
-
-# Run on Web
-npm run web
+npx expo start -c
 ```
 
-### Build APK
+## Files
 
-```bash
-# Local build (requires Android SDK)
-cd android
-./gradlew assembleRelease
+- `AnimatedBookIcon.tsx` — the actual animated SVG icon (outline draws in →
+  lines draw in staggered → checkmark draws in with a bounce → breathing
+  pulse loop while data loads).
+- `LoadingScreen.tsx` — wraps the icon on a full-screen dark background with
+  the app name fading in underneath once the draw-in finishes.
+- `App.example.tsx` — shows how to keep the **native** Expo splash screen
+  (the plain logo one) up while fonts/data load, then swap to this animated
+  screen, matching the flow from the earlier bug fix conversation.
 
-# Or via EAS Build
-eas build -p android --profile preview
-```
+## Customizing
 
-The APK will be at `android/app/build/outputs/apk/release/app-release.apk`.
+- Colors: edit the `COLORS` object at the top of `AnimatedBookIcon.tsx`.
+- Timing: all the `withDelay(ms, ...)` values in the `useEffect` control the
+  sequencing — outline → spine → 3 lines → checkmark → breathing loop.
+- Size: pass `size={...}` to `<AnimatedBookIcon />` (default 160).
+- To stop the breathing loop (e.g. one-shot animation instead of a loading
+  loop), pass `loop={false}`.
 
-## Project Structure
+## Notes
 
-```
-StudyBuddy/
-├── App.js                  # Root component with navigation
-├── screens/                # Screen components
-│   ├── LoginScreen.js
-│   ├── OnboardingStep1-5.js
-│   ├── HomeScreen.js
-│   ├── TutorScreen.js
-│   ├── ResourcesScreen.js
-│   └── ProfileScreen.js
-├── components/             # Reusable UI components
-├── services/               # API and storage services
-│   ├── aiService.js        # Gemini/Groq integration
-│   └── storageService.js   # AsyncStorage wrapper
-├── theme/                  # Design tokens
-│   └── tokens.js
-├── data/                   # Static data
-├── assets/                 # Images, fonts, icons
-└── android/                # Native Android project
-```
-
-## Design
-
-The app follows a "Scholarly Tactile" design system:
-- **Dark graphite/ink** background palette
-- **Ochre** primary accent (#D4A853)
-- **Sage** for success states
-- **Ink-blue** secondary
-- Typography: Literata (headings), Source Sans 3 (body), Caveat (accents)
-
-## License
-
-Private — college project by M Ayyan Ali
+- The SVG path data is a close hand-drawn approximation of your icon, not a
+  pixel-exported trace. If you want an exact match, export the icon as SVG
+  from your design tool and swap the `d="..."` values in
+  `AnimatedBookIcon.tsx` — the animation logic works the same regardless of
+  the exact path shapes, as long as `strokeDasharray`/`strokeDashoffset` stay
+  driven by the shared values already wired up.
+- `DASH_LENGTH` (1200) is set comfortably higher than any path's actual
+  length — react-native-svg doesn't reliably expose `getTotalLength()` on
+  native, so an oversized fixed value is the standard workaround.

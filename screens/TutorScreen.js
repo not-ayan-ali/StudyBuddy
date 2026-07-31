@@ -1,12 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { View, Text, TextInput, FlatList, Pressable, StyleSheet, KeyboardAvoidingView, Platform, SafeAreaView, Animated, Modal, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, FlatList, Pressable, StyleSheet, KeyboardAvoidingView, Platform, Animated, Modal, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { colors, fonts, spacing, borderRadius } from '../theme/tokens';
 import { askTutor } from '../services/aiService';
 import { getOnboardingData, getStudentName, getChatHistory, saveChatHistory, clearAll } from '../services/storageService';
-import { Audio } from 'expo-av';
-import * as ImagePicker from 'expo-image-picker';
-import * as DocumentPicker from 'expo-document-picker';
+import { useNotification } from '../components/NotificationBanner';
 
 function getInitials(name) {
   return name ? name.charAt(0).toUpperCase() : 'S';
@@ -21,6 +20,8 @@ function formatTime(date) {
 }
 
 export default function TutorScreen() {
+  const insets = useSafeAreaInsets();
+  const notify = useNotification();
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -28,26 +29,7 @@ export default function TutorScreen() {
   const [studentName, setStudentName] = useState('Scholar');
   const [chatHistory, setChatHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
-  const [recording, setRecording] = useState(null);
-  const [isUploading, setIsUploading] = useState(false);
-  const pulseAnim = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef(null);
-
-  useEffect(() => {
-    if (isRecording) {
-      pulseAnim.setValue(0);
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(pulseAnim, { toValue: 1, duration: 800, useNativeDriver: true }),
-          Animated.timing(pulseAnim, { toValue: 0, duration: 800, useNativeDriver: true }),
-        ])
-      ).start();
-    } else {
-      pulseAnim.stopAnimation();
-    }
-    return () => pulseAnim.stopAnimation();
-  }, [isRecording, pulseAnim]);
 
   useEffect(() => {
     async function load() {
@@ -56,7 +38,13 @@ export default function TutorScreen() {
       const name = await getStudentName();
       if (name) setStudentName(name);
       const history = await getChatHistory();
-      setChatHistory(history);
+      if (Array.isArray(history)) {
+        if (history.length > 0 && !history[0].messages) {
+          setChatHistory([{ messages: history }]);
+        } else {
+          setChatHistory(history);
+        }
+      }
     }
     load();
   }, []);
@@ -75,8 +63,9 @@ export default function TutorScreen() {
 
   const saveHistory = useCallback(async (newMessages) => {
     try {
-      await saveChatHistory(newMessages);
-      setChatHistory(newMessages);
+      const session = { messages: newMessages };
+      await saveChatHistory([session]);
+      setChatHistory([session]);
     } catch (e) {
       console.warn('Failed to save chat history', e);
     }
@@ -114,91 +103,6 @@ export default function TutorScreen() {
     await sendTextMessage(inputText);
     setInputText('');
   }, [inputText, sendTextMessage]);
-
-  const startRecording = useCallback(async () => {
-    if (Platform.OS === 'web') {
-      Alert.alert('Not supported', 'Voice recording is not available on web. Please use the mobile app.');
-      return;
-    }
-    try {
-      const { status } = await Audio.requestPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert('Permission needed', 'Microphone permission is required for voice messages.');
-        return;
-      }
-      await Audio.setAudioModeAsync({ allowsRecordingIOS: true, playsInSilentModeIOS: true });
-      const { recording } = await Audio.Recording.createAsync(Audio.RecordingOptionsPresets.HIGH_QUALITY);
-      setRecording(recording);
-      setIsRecording(true);
-    } catch (err) {
-      console.error('Failed to start recording', err);
-      Alert.alert('Error', 'Could not start recording');
-    }
-  }, []);
-
-  const stopRecording = useCallback(async () => {
-    setIsRecording(false);
-    if (!recording) return;
-    try {
-      await recording.stopAndUnloadAsync();
-      const uri = recording.getURI();
-      const status = await recording.getStatusAsync();
-      if (uri && status.durationMillis && status.durationMillis > 500) {
-        const text = `[Voice message: ${Math.round(status.durationMillis / 1000)}s]`;
-        await sendTextMessage(text);
-      }
-    } catch (err) {
-      console.error('Failed to stop recording', err);
-    } finally {
-      setRecording(null);
-    }
-  }, [recording, sendTextMessage]);
-
-  const handleUpload = useCallback(async () => {
-    if (Platform.OS === 'web') {
-      Alert.alert('Not supported', 'File upload is not available on web. Please use the mobile app.');
-      return;
-    }
-    setIsUploading(true);
-    try {
-      const action = await new Promise(resolve => {
-        Alert.alert(
-          'Attach file',
-          'Choose what to upload',
-          [
-            { text: 'Photo', onPress: () => resolve('photo') },
-            { text: 'Camera', onPress: () => resolve('camera') },
-            { text: 'Document', onPress: () => resolve('document') },
-            { text: 'Cancel', style: 'cancel', onPress: () => resolve(null) },
-          ]
-        );
-      });
-      if (!action) return;
-
-      let result;
-      if (action === 'photo') {
-        result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], allowsEditing: true, quality: 0.8 });
-      } else if (action === 'camera') {
-        const { status } = await ImagePicker.requestCameraPermissionsAsync();
-        if (status !== 'granted') { Alert.alert('Permission needed', 'Camera permission is required'); return; }
-        result = await ImagePicker.launchCameraAsync({ allowsEditing: true, quality: 0.8 });
-      } else {
-        result = await DocumentPicker.getDocumentAsync({ type: '*/*', copyToCacheDirectory: true });
-      }
-
-      if (!result.canceled && result.assets?.[0]?.uri) {
-        const file = result.assets[0];
-        const name = file.name || file.uri.split('/').pop() || 'file';
-        const text = `[File attached: ${name}]`;
-        await sendTextMessage(text);
-      }
-    } catch (err) {
-      console.error('Upload failed', err);
-      Alert.alert('Error', 'Failed to attach file');
-    } finally {
-      setIsUploading(false);
-    }
-  }, [sendTextMessage]);
 
   const renderMessage = ({ item }) => {
     const isAI = item.type === 'ai';
@@ -318,22 +222,6 @@ export default function TutorScreen() {
         />
 
         <View style={styles.inputBar}>
-          <View style={styles.inputActions}>
-            <Pressable style={styles.iconButton} onPress={handleUpload} disabled={isUploading}>
-              <MaterialIcons name="add-circle-outline" size={24} color={colors.onSurfaceVariant} />
-            </Pressable>
-            <Pressable style={[styles.iconButton, isRecording && styles.iconButtonActive]} onPress={isRecording ? stopRecording : startRecording} disabled={isUploading}>
-              <MaterialIcons name={isRecording ? "mic" : "mic-none"} size={24} color={isRecording ? colors.primary : colors.onSurfaceVariant} />
-              {isRecording && (
-                <Animated.View
-                  style={[
-                    styles.recordingPulse,
-                    { transform: [{ scale: pulseAnim.interpolate({ inputRange: [0, 1], outputRange: [0.8, 1.5] }) }], opacity: pulseAnim.interpolate({ inputRange: [0, 1], outputRange: [0.8, 0] }) }
-                  ]}
-                />
-              )}
-            </Pressable>
-          </View>
           <View style={styles.inputWrapper}>
             <TextInput
               style={styles.input}
@@ -600,18 +488,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     gap: spacing.sm,
   },
-  inputActions: {
-    flexDirection: 'row',
-    gap: spacing.xs,
-    paddingBottom: 2,
-  },
-  iconButton: {
-    width: 40,
-    height: 40,
-    borderRadius: borderRadius.full,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   inputWrapper: {
     flex: 1,
   },
@@ -747,17 +623,5 @@ const styles = StyleSheet.create({
     fontFamily: fonts.body,
     fontSize: 12,
     color: colors.onSurfaceVariant,
-  },
-  iconButtonActive: {
-    backgroundColor: colors.primary + '20',
-  },
-  recordingPulse: {
-    position: 'absolute',
-    top: -4,
-    right: -4,
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    backgroundColor: colors.primary,
   },
 });

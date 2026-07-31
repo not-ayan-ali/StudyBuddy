@@ -10,7 +10,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { colors, fonts, spacing } from '../theme/tokens';
 
-export default function AnimatedSplash({ onReady }) {
+export default function AnimatedSplash() {
   const pulse = useSharedValue(0.92);
   const textOpacity = useSharedValue(0);
 
@@ -25,10 +25,6 @@ export default function AnimatedSplash({ onReady }) {
     );
 
     textOpacity.value = withTiming(1, { duration: 800, easing: Easing.out(Easing.sin) });
-
-    if (onReady) {
-      onReady();
-    }
   }, []);
 
   const iconStyle = useAnimatedStyle(() => ({
@@ -48,7 +44,9 @@ export default function AnimatedSplash({ onReady }) {
           resizeMode="contain"
         />
       </Animated.View>
-      <Animated.Text style={[styles.title, titleStyle]}>StudyBuddy</Animated.Text>
+      <View style={styles.titleWrapper}>
+        <Animated.Text style={[styles.title, titleStyle]}>StudyBuddy</Animated.Text>
+      </View>
     </View>
   );
 }
@@ -71,10 +69,14 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
+  titleWrapper: {
+    paddingVertical: 8,
+  },
   title: {
     fontFamily: fonts.headingBold,
-    fontSize: 28,
+    fontSize: 36,
     color: colors.primary,
     letterSpacing: -0.5,
+    textAlign: 'center',
   },
 });

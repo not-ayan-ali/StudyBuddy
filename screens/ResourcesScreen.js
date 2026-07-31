@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking, Animated } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking, Animated, Alert } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, fonts, spacing, borderRadius } from '../theme/tokens';
 import { generateResources } from '../services/aiService';
 import { getOnboardingData } from '../services/storageService';
@@ -55,6 +56,7 @@ function LoadingDots() {
 }
 
 export default function ResourcesScreen() {
+  const insets = useSafeAreaInsets();
   const [resources, setResources] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -108,7 +110,7 @@ export default function ResourcesScreen() {
 
   if (loading) {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { paddingTop: insets.top }]}>
         <View style={styles.header}>
           <Text style={styles.loadingHeaderTitle}>Resources</Text>
         </View>
@@ -143,7 +145,7 @@ export default function ResourcesScreen() {
 
   if (error) {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { paddingTop: insets.top }]}>
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Resources</Text>
           <Text style={styles.headerSubtitle}>
@@ -182,7 +184,7 @@ export default function ResourcesScreen() {
 
   return (
     <FadeIn>
-      <View style={styles.container}>
+      <View style={[styles.container, { paddingTop: insets.top }]}>
         <View style={styles.headerRow}>
         <View style={styles.headerTextWrap}>
           <Text style={styles.headerTitle}>Resource Library</Text>
@@ -282,7 +284,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.surfaceDim,
-    paddingTop: spacing.lg,
   },
   header: {
     paddingHorizontal: spacing.lg,

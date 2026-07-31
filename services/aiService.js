@@ -1,5 +1,6 @@
 import { saveCurrentPlan } from './storageService';
 import { getCuratedResources } from '../data/curatedResources';
+import * as FileSystem from 'expo-file-system/legacy';
 
 const GEMINI_API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 const GROQ_API_BASE = 'https://api.groq.com/openai/v1/chat/completions';
@@ -244,6 +245,43 @@ export async function generateResources(studentClass, subjects) {
   }
   if (curated.length > 0) return curated;
   throw new Error(lastError?.message || 'No API keys configured and no curated resources available.');
+}
+
+export async function transcribeAudio(audioUri) {
+  const key = getGeminiKey();
+  if (!key) throw new Error('Gemini API key not configured');
+
+  const base64Audio = await FileSystem.readAsStringAsync(audioUri, {
+    encoding: FileSystem.EncodingType.Base64,
+  });
+
+  const mimeType = audioUri.endsWith('.wav') ? 'audio/wav' : 'audio/mp4';
+
+  const url = `${GEMINI_API_BASE}?key=${key}`;
+  const body = {
+    contents: [{
+      parts: [
+        { inlineData: { mimeType, data: base64Audio } },
+        { text: 'Transcribe this audio recording word for word. Only return the exact transcription, nothing else.' },
+      ],
+    }],
+  };
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`Gemini transcription error ${response.status}: ${errText}`);
+  }
+
+  const data = await response.json();
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) throw new Error('Empty transcription from Gemini');
+  return text.trim();
 }
 
 export async function askTutor(question, studentClass) {

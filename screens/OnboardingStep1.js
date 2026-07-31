@@ -3,24 +3,23 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert,
 import { colors, fonts, spacing, borderRadius } from '../theme/tokens';
 
 export default function OnboardingStep1({ navigation, route }) {
-  const [name, setName] = useState('');
   const [schoolStart, setSchoolStart] = useState('');
   const [schoolStartAmPm, setSchoolStartAmPm] = useState('AM');
   const [schoolEnd, setSchoolEnd] = useState('');
   const [schoolEndAmPm, setSchoolEndAmPm] = useState('PM');
 
   const handleNext = () => {
-    if (!name.trim() || !schoolStart.trim() || !schoolEnd.trim()) {
+    if (!schoolStart.trim() || !schoolEnd.trim()) {
       if (Platform.OS === 'web') {
-        window.alert('Required: Please enter your name, and both school start and end times.');
+        window.alert('Required: Please enter both school start and end times.');
       } else {
-        Alert.alert('Required', 'Please enter your name, and both school start and end times.');
+        Alert.alert('Required', 'Please enter both school start and end times.');
       }
       return;
     }
     const fullSchoolStart = `${schoolStart.trim()} ${schoolStartAmPm}`;
     const fullSchoolEnd = `${schoolEnd.trim()} ${schoolEndAmPm}`;
-    const data = { ...(route.params?.data || {}), name: name.trim(), schoolStart: fullSchoolStart, schoolEnd: fullSchoolEnd };
+    const data = { ...(route.params?.data || {}), schoolStart: fullSchoolStart, schoolEnd: fullSchoolEnd };
     navigation.navigate('Onboarding2', { data });
   };
 
@@ -28,24 +27,6 @@ export default function OnboardingStep1({ navigation, route }) {
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Text style={styles.stepIndicator}>STEP 01 / 05</Text>
       <View style={styles.headerSection}>
-        <Text style={styles.heading}>What's your name?</Text>
-      </View>
-      <View style={styles.formCard}>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>YOUR NAME</Text>
-          <View style={styles.inputRow}>
-            <TextInput
-              style={styles.input}
-              placeholder="e.g. Ali"
-              placeholderTextColor={colors.outlineVariant}
-              value={name}
-              onChangeText={setName}
-            />
-          </View>
-          <View style={styles.underline} />
-        </View>
-      </View>
-      <View style={[styles.headerSection, { marginTop: spacing.xl }]}>
         <Text style={styles.heading}>When are you in class?</Text>
         <Text style={styles.subtitle}>We'll build your study plan around your fixed school hours.</Text>
       </View>

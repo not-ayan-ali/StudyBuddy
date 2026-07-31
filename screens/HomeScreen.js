@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { View, Text, StyleSheet, Animated, Pressable, SafeAreaView, ScrollView, Alert, Platform, Modal } from 'react-native';
+import { View, Text, StyleSheet, Animated, Pressable, ScrollView, Alert, Platform, Modal } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CommonActions } from '@react-navigation/native';
 import { colors, fonts, spacing, borderRadius } from '../theme/tokens';
 import { generateStudyPlan } from '../services/aiService';
@@ -8,6 +9,7 @@ import {
   savePlanCompletion, getPlanCompletion, clearAll
 } from '../services/storageService';
 import { SkeletonCard, SkeletonText, SkeletonAvatar, SkeletonBase, SkeletonPostIt, FadeIn } from '../components/Skeleton';
+import { useNotification } from '../components/NotificationBanner';
 
 const CUSTOM_ERROR = '#C1613F';
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -45,6 +47,8 @@ function getDateForDay(dayName) {
 }
 
 export default function HomeScreen({ navigation }) {
+  const insets = useSafeAreaInsets();
+  const notify = useNotification();
   const [planState, setPlanState] = useState('loading');
   const [name, setName] = useState('Scholar');
   const [plan, setPlan] = useState(null);
@@ -81,7 +85,7 @@ export default function HomeScreen({ navigation }) {
         const onboardingData = await getOnboardingData();
         if (!onboardingData) { setPlanState('error'); return; }
         const result = await generateStudyPlan(onboardingData);
-        if (result?.error) { setPlanState('error'); return; }
+        if (result?.error) { setPlanState('error'); notify?.('Could not build your study plan. Check your connection.', 'error'); return; }
         currentPlan = result;
       }
 
@@ -110,6 +114,33 @@ export default function HomeScreen({ navigation }) {
       useNativeDriver: true,
     }).start();
   }, [selectedDayIndex]);
+
+  const notifiedBlocksRef = useRef(new Set());
+
+  useEffect(() => {
+    if (planState !== 'ready' || !plan?.days) return;
+
+    const checkSchedule = () => {
+      const todayName = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+      const todayBlock = plan.days.find(d => d.day === todayName);
+      if (!todayBlock?.blocks) return;
+
+      const now = new Date();
+      const currentMin = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+      todayBlock.blocks.forEach((block) => {
+        const key = block.start + block.subject;
+        if (block.start === currentMin && !notifiedBlocksRef.current.has(key)) {
+          notifiedBlocksRef.current.add(key);
+          notify?.(`Focus time! Time to study ${block.subject}: ${block.activity}`, 'info', 6000);
+        }
+      });
+    };
+
+    checkSchedule();
+    const interval = setInterval(checkSchedule, 30000);
+    return () => clearInterval(interval);
+  }, [planState, plan, notify]);
 
   const toggleBlock = useCallback(async (blockIndex) => {
     const key = `${selectedDayIndex}-${blockIndex}`;
@@ -159,7 +190,7 @@ export default function HomeScreen({ navigation }) {
 
   if (planState === 'loading') {
     return (
-      <SafeAreaView style={styles.container}>
+      <View style={[styles.container, { paddingTop: insets.top }]}>
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
           {renderHeader(name, navigation)}
 
@@ -205,13 +236,13 @@ export default function HomeScreen({ navigation }) {
             </View>
           </View>
         </ScrollView>
-      </SafeAreaView>
+      </View>
     );
   }
 
   if (planState === 'error') {
     return (
-      <SafeAreaView style={styles.container}>
+      <View style={[styles.container, { paddingTop: insets.top }]}>
         {renderHeader(name, navigation)}
         <View style={styles.centerContent}>
           <View style={styles.errorCard}>
@@ -230,21 +261,21 @@ export default function HomeScreen({ navigation }) {
             </Pressable>
           </View>
         </View>
-      </SafeAreaView>
+      </View>
     );
   }
 
   if (cadence === 'monthly') {
     return (
       <FadeIn>
-        {renderMonthlyView(name, plan, handleDeletePlan, navigation)}
+        {renderMonthlyView(name, plan, handleDeletePlan, navigation, insets)}
       </FadeIn>
     );
   }
 
   return (
     <FadeIn>
-      {renderDailyWeeklyView(name, plan, selectedDayIndex, setSelectedDayIndex, completion, toggleBlock, handleDeletePlan, dayScale, navigation)}
+      {renderDailyWeeklyView(name, plan, selectedDayIndex, setSelectedDayIndex, completion, toggleBlock, handleDeletePlan, dayScale, navigation, insets)}
     </FadeIn>
   );
 }
@@ -252,7 +283,7 @@ export default function HomeScreen({ navigation }) {
 function renderHeader(name, navigation) {
   return (
     <View style={styles.header}>
-      <Text style={styles.appTitle}>StudyBuddy</Text>
+      <Text style={styles.appTitle} numberOfLines={1}>StudyBuddy</Text>
       <Pressable onPress={() => navigation.navigate('Profile')} style={styles.avatar} hitSlop={spacing.sm}>
         <Text style={styles.avatarText}>{getInitials(name)}</Text>
       </Pressable>
@@ -260,7 +291,7 @@ function renderHeader(name, navigation) {
   );
 }
 
-function renderDailyWeeklyView(name, plan, selectedDayIndex, setSelectedDayIndex, completion, toggleBlock, handleDeletePlan, dayScale, navigation) {
+function renderDailyWeeklyView(name, plan, selectedDayIndex, setSelectedDayIndex, completion, toggleBlock, handleDeletePlan, dayScale, navigation, insets) {
   const days = plan?.days || [];
   const currentDayBlocks = days[selectedDayIndex]?.blocks || [];
   const blockCount = currentDayBlocks.length;
@@ -277,7 +308,7 @@ function renderDailyWeeklyView(name, plan, selectedDayIndex, setSelectedDayIndex
   const progressPct = totalMins > 0 ? (completedMins / totalMins) * 100 : 0;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         {renderHeader(name, navigation)}
 
@@ -358,18 +389,18 @@ function renderDailyWeeklyView(name, plan, selectedDayIndex, setSelectedDayIndex
           </Pressable>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
-function renderMonthlyView(name, plan, handleDeletePlan, navigation) {
+function renderMonthlyView(name, plan, handleDeletePlan, navigation, insets) {
   const weeks = plan?.weeks || [];
   const today = new Date();
   const dateStr = today.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
   const monthName = today.toLocaleDateString('en-US', { month: 'long' });
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         <View style={styles.monthlyHeaderRow}>
           <View style={styles.monthlyHeaderLeft}>
@@ -416,7 +447,7 @@ function renderMonthlyView(name, plan, handleDeletePlan, navigation) {
           </Pressable>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -438,6 +469,7 @@ const styles = StyleSheet.create({
     height: 64,
   },
   appTitle: {
+    flex: 1,
     fontFamily: fonts.headingBold,
     fontSize: 22,
     color: colors.primary,
